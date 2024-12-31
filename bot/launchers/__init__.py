@@ -3,7 +3,7 @@
 __author__ = "Marten4n6"
 __license__ = "GPLv3"
 
-import imp
+import importlib.util
 import json
 import random
 import string
@@ -34,7 +34,10 @@ def _load_module(module_name):
     """
     # Going to use imp over importlib until python decides to remove it.
     module_path = path.realpath(path.join(path.dirname(__file__), module_name + ".py"))
-    module = imp.load_source(module_name, module_path)
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
 
     _module_cache[module_name] = module
 
